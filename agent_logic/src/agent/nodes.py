@@ -3,6 +3,9 @@ from langgraph.types import Command, interrupt
 from langchain_core.messages import AIMessage, HumanMessage
 from src.utils.graph_utils import StateHrAgent, giga, RouteLLMOut
 from src.utils.logger import logger
+from src.simularity_logic.parsing_plus_similarity import get_similarity
+from pathlib import Path
+
 
 from pydantic import BaseModel, Field, ValidationError
 import json
@@ -108,9 +111,35 @@ def router(state: StateHrAgent) -> Command[Literal["compatibility_stub","intervi
 
 # Заглушки задач (пока не разработаны)
 def compatibility_stub(state: StateHrAgent):
-    msg = "🔧 Нода «Совместимость резюме и вакансии» пока не разработана."
-    logger.log("CHAT", f"{msg}")
-    return Command(update={"messages":[AIMessage(content=msg)]}, goto="human")
+    resume_path = state.get("resume_path")
+    vacancy_path = state.get("vacancy_path")
+
+    # Валидация путей
+    rp, vp = Path(str(resume_path)), Path(str(vacancy_path))
+    if not rp.exists() or not rp.is_dir():
+        msg = f"❗️resume_path должен быть ПАПКОЙ с .txt резюме: {rp}"
+        logger.error(msg)
+        return Command(update={"messages": [AIMessage(content=msg)]}, goto="human")
+
+    if not vp.exists() or not vp.is_file():
+        msg = f"❗️vacancy_path должен быть ФАЙЛОМ вакансии: {vp}"
+        logger.error(msg)
+        return Command(update={"messages": [AIMessage(content=msg)]}, goto="human")
+
+    # Расчёт схожести
+    sim_dict = get_similarity(str(rp), str(vp))
+    sorted_sims = sorted(sim_dict.items(), key=lambda x: x[1], reverse=True)
+
+    lines = ["\n=== ТОП совпадений резюме/вакансии ==="]
+    for i, (fname, score) in enumerate(sorted_sims[:10], start=1):
+        lines.append(f"{i:>2}. {fname:<30} | {score:.4f}")
+
+    logger.log("DATA", "\n".join(lines))
+    msg = "🔧 Совместимость рассчитана (см. логи)."
+
+    logger.log("CHAT", {msg})
+    return Command(update={"messages": [AIMessage(content=msg)]}, goto="human")
+
 
 def interview_stub(state: StateHrAgent):
     msg = "🔧 Нода «Анализ интервью / портрет кандидата» пока не разработана."
