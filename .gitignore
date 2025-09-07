@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Logs
+*.log
+agent_logic/file.log
+
+# OS-specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# macOS archive junk
+__MACOSX/
+
+# VSCode / IDE
+.vscode/
+.idea/
+
+# Data artifacts
+agent_logic/data/input/biznes-analitik/__MACOSX/
