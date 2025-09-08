@@ -35,8 +35,18 @@ class EmpProfileViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
 
 #--------------------------------------------------------------
-class LoadViewSet(viewsets.ViewSet):
+class LoadListSet(viewsets.ViewSet):
     #list(), create(), retrieve(), update(), partial_update(), destroy().
     def list(self, request):
-        return Response('Hello list')
+        # вывод листа кандидатов (ранжированный с )
+        return Response('List of open vacancies')
 
+    def retrieve(self, request, pk=None):
+        # вывод листа кандидатов (ранжированный с )
+        return Response('List of candidates to vacancy')
+
+    def create(self, request):
+        return Response('Form or update list of vacancies')
+
+    def update(self, request, pk=None):
+        return Response('Set Services to Candidate')
