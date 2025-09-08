@@ -1,5 +1,6 @@
 # Create your views here.
-from rest_framework import viewsets, permissions, filters
+from django.contrib.admin.templatetags.admin_list import result_list
+from rest_framework import viewsets, permissions, filters, status
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -36,17 +37,78 @@ class EmpProfileViewSet(viewsets.ModelViewSet):
 
 #--------------------------------------------------------------
 class LoadListSet(viewsets.ViewSet):
+    permission_classes = [permissions.AllowAny]
     #list(), create(), retrieve(), update(), partial_update(), destroy().
     def list(self, request):
         # вывод листа кандидатов (ранжированный с )
-        return Response('List of open vacancies')
+        resultat = [
+            {"id" : '1',
+             "name" : "Курьер",
+             "region" : "Москва",
+             "contract_type" : "1",
+             "income" : "20000",
+             "software_knowledges" : "DBeaves, MySQLAdmin, PHPStorm, алгоритмы",
+             "software_skills" : "PHP SQL HTTP REST",
+             "duties" : "Доставлять заказы в удобном для тебя районе: у Ozon fresh большое количество локаций—выберу ту, которая ближе к дому",
+             "requirements": "Сможешь использовать для заказов свой телефон на Android"},
+            {"id" : '5',
+             "name" : "Велокурьер ",
+             "region" : "Москва",
+             "contract_type" : "1",
+             "income" : "20000",
+             "software_knowledges" : "DBeaves, MySQLAdmin, PHPStorm, алгоритмы",
+             "software_skills" : "PHP SQL HTTP REST",
+             "duties" : "Никакой еды, пиццы, никакого шашлыка, никаких кирпичей. Только лёгкие посылки",
+             "requirements": "Немного желания двигаться и зарабатывать"}
+        ]
+        return Response(data = resultat, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
-        # вывод листа кандидатов (ранжированный с )
-        return Response('List of candidates to vacancy')
+        resp = []
+        if pk == '1':
+            resp = [
+                {"id" : "6",
+                 "fio" : "Иванов Петр Иванович",
+                 "town" : "Москва",
+                 "compliance" : 80,
+                 "complete" : 20,
+                 "reliability" : 60},
+                {"id" : "8",
+                 "fio": "Сидоров Петр Иванович",
+                 "town": "Москва",
+                 "compliance": 70,
+                 "complete": 60,
+                 "reliability": 30}
+            ]
+        if pk == '5':
+            resp = [
+                {"id" : "3",
+                 "fio" : "Петруччо",
+                 "town" : "Москва",
+                 "compliance" : 80,
+                 "complete" : 20,
+                 "reliability" : 60},
+                {"id" : "4",
+                 "fio": "Чиполино",
+                 "town": "Москва",
+                 "compliance": 70,
+                 "complete": 60,
+                 "reliability": 30}
+            ]
 
-    def create(self, request):
-        return Response('Form or update list of candidates')
+        # вывод листа кандидатов (ранжированный с )
+        return Response(data = resp, status=status.HTTP_200_OK)
 
     def update(self, request, pk=None):
-        return Response('Set Services to Candidate')
+        data = {
+            "result" : "Отправлен на формирование",
+            "id vaca" : pk
+        }
+        return Response(data = data, status=status.HTTP_200_OK)
+
+    #@action(detail=True, methods=['post'])
+    def post(self, request, pk=None):
+        if pk:
+            return Response(data={f'Отправлены задания кандидату {pk}'}, status=status.HTTP_200_OK)
+        else:
+            return Response(data={"Не задан кандидат"}, status=status.HTTP_200_OK)
