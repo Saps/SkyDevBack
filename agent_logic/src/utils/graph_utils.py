@@ -32,6 +32,8 @@ giga = GigaChat(model=config["giga_version"],
 class StateHrAgent(TypedDict):
     messages: Annotated[List[AnyMessage], add_messages]
     user_input: str
+    resume_path: str
+    vacancy_path: str
     intent: Optional[str]
     meta: Dict[str, Any]   
 
