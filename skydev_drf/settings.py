@@ -34,7 +34,7 @@ SECRET_KEY = 'django-insecure-07rfmtvg30isqo%)e@-p-6(gy)g1#%0i%@a+3agqw1aqtvt=uj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ussr-lab.ru', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['ussr-lab.ru', '127.0.0.1', 'localhost', 'www.ussr-lab.ru']
 
 
 # Application definition
