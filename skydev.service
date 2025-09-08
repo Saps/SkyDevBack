@@ -1,0 +1,17 @@
+[Unit]
+Description=Gunicorn for skydev
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/var/www/SkyDevBack
+Environment=""
+ExecStart=gunicorn skydev_drf.wsgi:application --workers 3 --bind 0.0.0.0:8020
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
