@@ -1,17 +1,23 @@
 #Подключаемся к DeepSeek
 
 import requests
-from functions_for_SS_API import *
+from SkyDevBack.audio_interview.functions_for_SS_API import * #загружаем функции для синтеза и распознавания
+from dotenv import load_dotenv
+
 
 # Replace with your OpenRouter API key
-API_KEY = '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'
+load_dotenv()
+
+OPEN_ROUTER_API_KEY = os.getenv('OPEN_ROUTER_API_KEY')
+
+
 API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
 query = 'бизнес-аналитик'
 
 # Define the headers for the API request
 headers = {
-    'Authorization': f'Bearer {API_KEY}',
+    'Authorization': f'Bearer {OPEN_ROUTER_API_KEY}',
     'Content-Type': 'application/json'
 }
 
@@ -56,7 +62,7 @@ messages = [{
       "content": cand_resp
       }
 ]
-
+#в цикле прокручиваем диалог
 while cand_resp.lower().find('всего доброго')<0 and cand_resp.lower().find('до свидания')<0 \
     and hr_resp.find('кандидат')<0:
 
@@ -78,6 +84,16 @@ while cand_resp.lower().find('всего доброго')<0 and cand_resp.lower(
         #получаем аудио от кандидата
 
         cand_resp = recognize(path_to_audio)
+
+        messages.append({
+            "role": "assistant",
+            "content": q
+            })
+
+        messages.,append({
+              "role": "user",
+              "content": cand_resp
+              })
 
 
 print(messages)
