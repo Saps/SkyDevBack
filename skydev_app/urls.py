@@ -1,12 +1,15 @@
 from django.urls import include, path
 from rest_framework import routers
-from .views import DomainViewSet, VacancyViewSet, VacancyReqViewSet
+from .views import VacancyViewSet, VacancyReqViewSet, CandidateViewSet, EmpProfileViewSet, LoadViewSet
 
 router = routers.DefaultRouter()
-router.register(r'domains', DomainViewSet)
 
 router.register(r'vacancies', VacancyViewSet)
 router.register(r'vacanciesreq', VacancyReqViewSet)
+router.register(r'candidate', CandidateViewSet)
+router.register(r'empprofile', EmpProfileViewSet)
+
+router.register(r'load', LoadViewSet, basename='load')
 
 urlpatterns = [
     path('', include(router.urls)),

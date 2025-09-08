@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib import admin
 
 # Register your models here.
-from .models import Vacancy,Candidate, EmpProfile, VacancyReq
+from .models import Vacancy, Candidate, EmpProfile, VacancyReq
 
 #admin.site.register(Project)
 

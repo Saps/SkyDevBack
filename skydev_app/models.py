@@ -2,11 +2,6 @@ from django.db import models
 from .choices import *
 
 # Create your models here.
-class Domain(models.Model):
-    name = models.CharField(max_length=255)
-    value = models.CharField(max_length=255)
-    code = models.IntegerField()
-
 
 class Vacancy(models.Model):
     status = models.IntegerField(choices=VACANCY_STATUSES)
@@ -59,3 +54,9 @@ class EmpProfile(models.Model):
     allow_trip = models.IntegerField(choices=AT_STATUSES)
 
 
+class Tasks(models.Model):
+    name = models.TextField()
+    status = models.CharField(max_length=255)
+    blocked = models.BooleanField(default=False)
+    in_params = models.JSONField()
+    out_params = models.JSONField()
