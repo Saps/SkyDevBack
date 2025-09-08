@@ -46,7 +46,7 @@ class LoadListSet(viewsets.ViewSet):
         return Response('List of candidates to vacancy')
 
     def create(self, request):
-        return Response('Form or update list of vacancies')
+        return Response('Form or update list of candidates')
 
     def update(self, request, pk=None):
         return Response('Set Services to Candidate')
