@@ -57,7 +57,7 @@ class EmpProfile(models.Model):
     software_skills = models.CharField(max_length=255,null=True)
     allow_trip = models.IntegerField(choices=AT_STATUSES,null=True)
     rawtext = models.TextField(null=True)
-    similarity_score = models.FloatField(null=True)
+    similarity_score = models.FloatField(null=True, default=0)
 
 
 class Tasks(models.Model):
