@@ -8,10 +8,11 @@ router.register(r'vacancies', VacancyViewSet)
 router.register(r'vacanciesreq', VacancyReqViewSet)
 router.register(r'candidate', CandidateViewSet)
 router.register(r'empprofile', EmpProfileViewSet)
+router.register(r'statparam', StatParamSet)
 
 router.register(r'load', LoadListSet, basename='load')
 
-router.register(r'statparam', StatParamSet)
+
 
 urlpatterns = [
     path('', include(router.urls)),

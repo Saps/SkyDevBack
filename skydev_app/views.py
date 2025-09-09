@@ -122,8 +122,7 @@ class LoadListSet(viewsets.ViewSet):
             return Response(data={"Не задан кандидат"}, status=status.HTTP_200_OK)
 
 
-class StatParamSet(viewsets.ViewSet):
+class StatParamSet(viewsets.ModelViewSet):
     queryset = StatParams.objects.all()
     serializer_class = StatParamSerializer
-    #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     permission_classes = [permissions.AllowAny]

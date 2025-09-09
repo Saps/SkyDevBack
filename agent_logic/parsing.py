@@ -22,12 +22,15 @@ def get_cvs(keywords):  # функция парсинга и сохранени�
     pg = f'https://hh.ru/search/resume?text={text}&logic=normal&pos=full_text&exp_period=all_time&exp_company_size=any&filter_exp_period=all_time&area=1&relocation=living_or_relocation&age_from=&age_to=&gender=unknown&salary_from=&salary_to=&currency_code=RUR&order_by=relevance&search_period=0&items_on_page=1000&hhtmFrom=resume_search_form'
     records_fetched = 0
 
-    geckodriver_path = "/snap/bin/geckodriver"
-    driver_service = webdriver.FirefoxService(executable_path=geckodriver_path)
+    if os.getenv('IS_WINDOWS'):
+        browser = webdriver.Firefox()
+    else:
+        geckodriver_path = "/snap/bin/geckodriver"
+        driver_service = webdriver.FirefoxService(executable_path=geckodriver_path)
 
-    opts = FirefoxOptions()
-    opts.add_argument("--headless")
-    browser = webdriver.Firefox(options=opts, service=driver_service)
+        opts = FirefoxOptions()
+        opts.add_argument("--headless")
+        browser = webdriver.Firefox(options=opts, service=driver_service)
 
     #browser = webdriver.Firefox(service=driver_service)
 
