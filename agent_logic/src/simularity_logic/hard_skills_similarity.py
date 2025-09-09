@@ -5,9 +5,9 @@ from deepseek_python_similarity_metrics import TextNormalizer, TextSimilarityCal
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
+#load_dotenv()
 
-OPEN_ROUTER_API_KEY = os.getenv('OPEN_ROUTER_API_KEY')
+#OPEN_ROUTER_API_KEY = os.getenv('OPEN_ROUTER_API_KEY')
 
 
 def extract_txt_file(file_path):
@@ -28,7 +28,7 @@ def get_similarity_by_hard_skills(file_text):
     sim_dict = {}
 
         # Запрос к OpenRouter
-    API_KEY = OPEN_ROUTER_API_KEY
+    API_KEY = os.getenv('OPEN_ROUTER_API_KEY')
     API_URL = 'https://openrouter.ai/api/v1/chat/completions'
     headers = {
             "Authorization": f"Bearer {API_KEY}",

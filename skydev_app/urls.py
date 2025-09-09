@@ -1,6 +1,6 @@
 from django.urls import include, path
 from rest_framework import routers
-from .views import VacancyViewSet, VacancyReqViewSet, CandidateViewSet, EmpProfileViewSet, LoadListSet, StatParamSet
+from .views import VacancyViewSet, VacancyReqViewSet, CandidateViewSet, EmpProfileViewSet, LoadListSet, StatParamSet, LoadRelSet
 
 router = routers.DefaultRouter()
 
@@ -11,6 +11,7 @@ router.register(r'empprofile', EmpProfileViewSet)
 router.register(r'statparam', StatParamSet)
 
 router.register(r'load', LoadListSet, basename='load')
+router.register(r'loadrel', LoadRelSet, basename='loadrel')
 
 
 
