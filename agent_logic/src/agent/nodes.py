@@ -5,6 +5,7 @@ from src.utils.graph_utils import StateHrAgent, giga, RouteLLMOut
 from src.utils.logger import logger
 from src.simularity_logic.parsing_plus_similarity import get_similarity
 from pathlib import Path
+from src.interview.DeepSeek_HR_interview import run
 
 
 from pydantic import BaseModel, Field, ValidationError
@@ -141,7 +142,36 @@ def compatibility_stub(state: StateHrAgent):
     return Command(update={"messages": [AIMessage(content=msg)]}, goto="human")
 
 
-def interview_stub(state: StateHrAgent):
-    msg = "🔧 Нода «Анализ интервью / портрет кандидата» пока не разработана."
-    logger.log("CHAT", f"{msg}")
-    return Command(update={"messages":[AIMessage(content=msg)]}, goto="human")
+def interview_stub(state: StateHrAgent) -> Command[Literal["human"]]:
+    query = state.get("vacancy")       # ожидаем строку должности
+    mp3_path = state.get("mp3_path")   # путь к ответу кандидата (или последнему фрагменту)
+
+    if not query:
+        msg = "Нужна позиция (state['vacancy']). Уточните, на какую роль собеседуем."
+        logger.error(msg)
+        return Command(update={"messages":[AIMessage(content=msg)]}, goto="human")
+
+    if not mp3_path:
+        msg = "Не найден аудиофайл кандидата (state['mp3_path']). Загрузите или укажите путь."
+        logger.error(msg)
+        return Command(update={"messages":[AIMessage(content=msg)]}, goto="human")
+
+    try:
+        interview_run = run({"query": query, "mp3_path": mp3_path})
+        logger.log("DATA", f"[INTERVIEW] {interview_run.get('summary','')}")
+    except Exception as e:
+        err = f"Сбой интервью: {e}"
+        logger.exception(err)
+        return Command(update={"messages":[AIMessage(content=err)]}, goto="human")
+
+    msg = "🔧 Интервью проведено. Итоги и артефакты сохранены в стейте/логах."
+    logger.log("CHAT", msg)
+
+    # кладём результат в стейт, чтобы другие узлы могли использовать
+    return Command(
+        update={
+            "messages":[AIMessage(content=msg)],
+            "interview_result": interview_run,  # вся история/артефакты
+        },
+        goto="human"
+    )
