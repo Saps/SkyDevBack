@@ -34,8 +34,11 @@ class StateHrAgent(TypedDict):
     user_input: str
     resume_path: str
     vacancy_path: str
+    vacancy : str
+    mp3_path: str
     intent: Optional[str]
     meta: Dict[str, Any]   
+    interview_result: dict
 
 class RouteLLMOut(BaseModel):
     intent: Literal["compatibility", "interview", "clarify", "out_of_scope"]

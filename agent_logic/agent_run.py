@@ -10,7 +10,7 @@ def resolve_path(base_dir: Path, p: str | Path) -> Path:
     p = Path(p)
     return p if p.is_absolute() else (base_dir / p)
 
-def init_state(resume_dir: Path, vacancy_txt: Path) -> dict:
+def init_state(resume_dir: Path, vacancy: str, vacancy_txt: Path, mp3_path:Path) -> dict:
     return {
         "messages": [],
         "user_input": "",
@@ -18,6 +18,10 @@ def init_state(resume_dir: Path, vacancy_txt: Path) -> dict:
         "meta": {},
         "resume_path": str(resume_dir),
         "vacancy_path": str(vacancy_txt),
+        "interview_result" : {},
+        "mp3_path" : str(mp3_path),
+        "vacancy" : vacancy
+
     }
 
 def extract_last_ai_text(state: dict) -> str:
@@ -37,17 +41,30 @@ def run_interactive(in_params: dict) -> None:
     script_dir = Path(__file__).resolve().parent
     _ = load_env(in_params.get("env_file", ".env"))
 
-    resume_dir = resolve_path(script_dir, in_params["resume_dir"])
-    vacancy_txt = resolve_path(script_dir, in_params["vacancy_path"])
+    # обязательные поля
+    try:
+        resume_dir = resolve_path(script_dir, in_params["resume_dir"])
+        vacancy_txt = resolve_path(script_dir, in_params["vacancy_path"])
+        mp3_path   = resolve_path(script_dir, in_params["mp3_path"])
+        vacancy    = in_params["vacancy"]
+    except KeyError as e:
+        print(f"[ERR] missing param: {e}")
+        return
 
-    if not resume_dir.exists():
-        print(f"[ERR] resume_dir not found: {resume_dir}"); return
-    if not vacancy_txt.exists():
-        print(f"[ERR] vacancy_path not found: {vacancy_txt}"); return
+    # валидация путей
+    if not resume_dir.exists() or not resume_dir.is_dir():
+        print(f"[ERR] resume_dir not found or not a directory: {resume_dir}"); return
+    if not vacancy_txt.exists() or not vacancy_txt.is_file():
+        print(f"[ERR] vacancy_path not found or not a file: {vacancy_txt}"); return
+    if not mp3_path.exists() or not mp3_path.is_file():
+        print(f"[ERR] mp3_path not found or not a file: {mp3_path}"); return
+    if not isinstance(vacancy, str) or not vacancy.strip():
+        print(f"[ERR] vacancy must be non-empty string"); return
 
     thread_id = in_params.get("thread_id", f"hr-{uuid4()}")
     cfg = {"configurable": {"thread_id": thread_id}, "recursion_limit": 200}
-    state = init_state(resume_dir, vacancy_txt)
+    
+    state = init_state(resume_dir, vacancy.strip(), vacancy_txt, mp3_path)
 
     try:
         st = hr_graph.invoke(state, config=cfg)
@@ -76,6 +93,8 @@ def run_interactive(in_params: dict) -> None:
 ## как вызывать
 
 # run_interactive({
-#     "resume_dir": r"data\input\biznes-analitik\biznes-analitik",
-#     "vacancy_path": r"data\input\бизнес-аналитик.txt",
+#     "resume_dir":  r"data\input\biznes-analitik\biznes-analitik",
+#     "vacancy":     "бизнес-аналитик",
+#     "mp3_path":    r"data\input\audio\candidate_answer_01.mp3",
+#     "vacancy_path":r"data\input\бизнес-аналитик.txt",
 # })
