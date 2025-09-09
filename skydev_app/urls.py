@@ -1,6 +1,6 @@
 from django.urls import include, path
 from rest_framework import routers
-from .views import VacancyViewSet, VacancyReqViewSet, CandidateViewSet, EmpProfileViewSet, LoadListSet
+from .views import VacancyViewSet, VacancyReqViewSet, CandidateViewSet, EmpProfileViewSet, LoadListSet, StatParamSet
 
 router = routers.DefaultRouter()
 
@@ -10,6 +10,8 @@ router.register(r'candidate', CandidateViewSet)
 router.register(r'empprofile', EmpProfileViewSet)
 
 router.register(r'load', LoadListSet, basename='load')
+
+router.register(r'statparam', StatParamSet)
 
 urlpatterns = [
     path('', include(router.urls)),

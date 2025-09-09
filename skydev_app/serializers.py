@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import Vacancy, VacancyReq, Candidate, EmpProfile
-
+from .models import Vacancy, VacancyReq, Candidate, EmpProfile, StatParams
 
 
 class VacancySerializer(serializers.ModelSerializer):
@@ -36,3 +35,11 @@ class EmpProfileSerializer(serializers.ModelSerializer):
         fields = ('candidate', 'specs', 'contract_type', 'emp_type', 'work_sced',
                   'software_knowledges', 'software_skills', 'allow_trip')
 
+
+
+class StatParamSerializer(serializers.ModelSerializer):
+    """Сериализатор для модели Domain"""
+
+    class Meta:
+        model = StatParams
+        fields = ('id', 'ordernum', 'name', 'caption', 'value')

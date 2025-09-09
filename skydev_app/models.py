@@ -66,3 +66,10 @@ class Tasks(models.Model):
     blocked = models.BooleanField(default=False)
     in_params = models.JSONField()
     out_params = models.JSONField()
+
+
+class StatParams(models.Model):
+    name = models.TextField()
+    caption = models.TextField()
+    value = models.FloatField()
+    ordernum = models.IntegerField()

@@ -4,8 +4,8 @@ from rest_framework import viewsets, permissions, filters, status
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import Vacancy, VacancyReq, Candidate, EmpProfile, Tasks
-from .serializers import VacancySerializer, VacancyReqSerializer, CandidateSerializer, EmpProfileSerializer
+from .models import Vacancy, VacancyReq, Candidate, EmpProfile, Tasks, StatParams
+from .serializers import VacancySerializer, VacancyReqSerializer, CandidateSerializer, EmpProfileSerializer, StatParamSerializer
 
 
 class VacancyViewSet(viewsets.ModelViewSet):
@@ -120,3 +120,10 @@ class LoadListSet(viewsets.ViewSet):
             return Response(data={f'Отправлены задания кандидату {pk}'}, status=status.HTTP_200_OK)
         else:
             return Response(data={"Не задан кандидат"}, status=status.HTTP_200_OK)
+
+
+class StatParamSet(viewsets.ViewSet):
+    queryset = StatParams.objects.all()
+    serializer_class = StatParamSerializer
+    #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.AllowAny]
