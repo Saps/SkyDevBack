@@ -146,11 +146,13 @@ class TextSimilarityCalculator:
         
         raise ValueError(f"Не удалось прочитать файл {file_path} с поддерживаемыми кодировками")
     
-    def calculate_similarity(self, vacancy_path: str, resume_path: str) -> float:
-        """Расчет меры похожести с нормализацией"""
+    #def calculate_similarity(self, vacancy_path: str, resume_path: str) -> float:
+     #   """Расчет меры похожести с нормализацией"""
         # Чтение файлов
-        vacancy_text = self.read_file(vacancy_path)
-        resume_text = self.read_file(resume_path)
+        #vacancy_text = self.read_file(vacancy_path)
+        #resume_text = self.read_file(resume_path)
+    def calculate_similarity(self, vacancy_text: str, resume_text: str) -> float:
+        """Расчет меры похожести с нормализацией"""
         k = resume_text.find('Кандидат')
         resume_text = resume_text[k+8:]
         
@@ -158,10 +160,10 @@ class TextSimilarityCalculator:
         normalized_vacancy = self.normalizer.normalize_text(vacancy_text)
         normalized_resume = self.normalizer.normalize_text(resume_text)
         
-        print("Нормализованное описание вакансии:")
-        print(normalized_vacancy[:500] + "..." if len(normalized_vacancy) > 500 else normalized_vacancy)
-        print("\nНормализованное резюме:")
-        print(normalized_resume[:500] + "..." if len(normalized_resume) > 500 else normalized_resume)
+        #print("Нормализованное описание вакансии:")
+        #print(normalized_vacancy[:500] + "..." if len(normalized_vacancy) > 500 else normalized_vacancy)
+        #print("\nНормализованное резюме:")
+        #print(normalized_resume[:500] + "..." if len(normalized_resume) > 500 else normalized_resume)
         
         # Создание TF-IDF векторов
         vectorizer = TfidfVectorizer(ngram_range=(1, 2), max_features=1000)
@@ -172,10 +174,11 @@ class TextSimilarityCalculator:
         
         return similarity
     
-    def get_detailed_analysis(self, vacancy_path: str, resume_path: str) -> Dict:
+    #def get_detailed_analysis(self, vacancy_path: str, resume_path: str) -> Dict:
+    def get_detailed_analysis(self, vacancy_text: str, resume_text: str) -> Dict:
         """Детальный анализ с нормализацией"""
-        vacancy_text = self.read_file(vacancy_path)
-        resume_text = self.read_file(resume_path)
+        #vacancy_text = self.read_file(vacancy_path)
+        #resume_text = self.read_file(resume_path)
         k = resume_text.find('Кандидат')
         resume_text = resume_text[k+8:]
         
@@ -189,7 +192,7 @@ class TextSimilarityCalculator:
         common_words = vacancy_words.intersection(resume_words)
         
         # Расчет схожести
-        similarity = self.calculate_similarity(vacancy_path, resume_path)
+        similarity = self.calculate_similarity(vacancy_text, resume_text)
         
         return {
             'similarity_score': similarity,

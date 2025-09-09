@@ -4,7 +4,7 @@ from rest_framework import viewsets, permissions, filters, status
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import Vacancy, VacancyReq, Candidate, EmpProfile
+from .models import Vacancy, VacancyReq, Candidate, EmpProfile, Tasks
 from .serializers import VacancySerializer, VacancyReqSerializer, CandidateSerializer, EmpProfileSerializer
 
 
@@ -40,27 +40,26 @@ class LoadListSet(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
     #list(), create(), retrieve(), update(), partial_update(), destroy().
     def list(self, request):
-        # вывод листа кандидатов (ранжированный с )
-        resultat = [
-            {"id" : '1',
-             "name" : "Курьер",
-             "region" : "Москва",
-             "contract_type" : "1",
-             "income" : "20000",
-             "software_knowledges" : "DBeaves, MySQLAdmin, PHPStorm, алгоритмы",
-             "software_skills" : "PHP SQL HTTP REST",
-             "duties" : "Доставлять заказы в удобном для тебя районе: у Ozon fresh большое количество локаций—выберу ту, которая ближе к дому",
-             "requirements": "Сможешь использовать для заказов свой телефон на Android"},
-            {"id" : '5',
-             "name" : "Велокурьер ",
-             "region" : "Москва",
-             "contract_type" : "1",
-             "income" : "20000",
-             "software_knowledges" : "DBeaves, MySQLAdmin, PHPStorm, алгоритмы",
-             "software_skills" : "PHP SQL HTTP REST",
-             "duties" : "Никакой еды, пиццы, никакого шашлыка, никаких кирпичей. Только лёгкие посылки",
-             "requirements": "Немного желания двигаться и зарабатывать"}
-        ]
+        # вывод листа вакансий
+        resultat = []
+        res = Vacancy.objects.filter(status=1).all()
+
+        for curr_res in res:
+            curr_struct = {"id" : curr_res.id,
+             "name" : curr_res.name,
+             "region" : curr_res.region,
+             "contract_type" : curr_res.contract_type,
+             "income" : curr_res.income,
+             "software_knowledges" : curr_res.software_knowledges,
+             "software_skills" : curr_res.software_skills,
+             "duties" : "",
+             "requirements": ""}
+            vac_req = VacancyReq.objects.filter(vacancy_id = curr_res.id).all()
+            for curr_vr in vac_req:
+                curr_struct["duties"] += ", " + curr_vr.duties
+                curr_struct["requirements"] += ", " + curr_vr.requirements
+            resultat.append(curr_struct)
+
         return Response(data = resultat, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
@@ -100,9 +99,18 @@ class LoadListSet(viewsets.ViewSet):
         return Response(data = resp, status=status.HTTP_200_OK)
 
     def update(self, request, pk=None):
+        in_par = {'vacancy_id' : pk}
+        tsk = Tasks(
+            name = 'parsing',
+            status = 'READY',
+            blocked = 0,
+            in_params = in_par,
+            out_params = {}
+        )
+        tsk.save()
         data = {
             "result" : "Отправлен на формирование",
-            "id vaca" : pk
+            "vacancy_id" : pk
         }
         return Response(data = data, status=status.HTTP_200_OK)
 
