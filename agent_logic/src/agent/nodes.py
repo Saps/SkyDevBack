@@ -5,7 +5,7 @@ from src.utils.graph_utils import StateHrAgent, giga, RouteLLMOut
 from src.utils.logger import logger
 from src.simularity_logic.parsing_plus_similarity import get_similarity
 from pathlib import Path
-from src.agent.interview.DeepSeek_HR_interview import run
+from src.interview.DeepSeek_HR_interview import run
 
 
 from pydantic import BaseModel, Field, ValidationError
